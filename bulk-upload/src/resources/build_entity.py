@@ -16,7 +16,8 @@ class BuildEntity:
 
         entity_df = self.df[[x for x in self.df.columns if not(x.startswith('property') or x.startswith('value'))]]
         
-        entity_template_df = read_file('data_files/Bulk_upload_template_HSBC.xlsx', 'entity_template')
+        # entity_template_df = read_file('data_files/Bulk_upload_template_HSBC.xlsx', 'entity_template')
+        entity_template_df = query_from_db('entity_template')
         map_templates = MapTemplates()
         entity_df = map_templates.map_entity_template(entity_template_df, entity_df)
 
@@ -36,15 +37,18 @@ class BuildEntity:
                         break
 
         
-        entity_mapper = id_mapper(entity_df, 'entity_physical_name', 'entity_id')
+        entity_mapper = id_mapper(entity_df, 'entity', 'entity_physical_name', 'entity_id')
         entity_df = entity_df[entity_columns]
         
         entity_df = add_who_columns(entity_df)
         entity_props_df1 = add_who_columns(entity_props_df1)
         
-        insert_into_db('entity', entity_db_columns, entity_df, entity_df_columns)
-        insert_into_db('entity_properties', entity_props_db_columns, entity_props_df1, entity_props_df_columns)
+        if entity_df.shape[0] > 0:
+            insert_into_db('entity', entity_db_columns, entity_df, entity_df_columns)
+        
+        if entity_props_df1.shape[0] > 0:
+            insert_into_db('entity_properties', entity_props_db_columns, entity_props_df1, entity_props_df_columns)
 
-        entity_df.to_csv('output/entity.csv', index= False)
-        entity_props_df1.to_csv('output/entity_properties.csv', index= False)
+        entity_df.to_csv('bulk-upload/output/entity.csv', index= False)
+        entity_props_df1.to_csv('bulk-upload/output/entity_properties.csv', index= False)
         return entity_mapper, entity_df

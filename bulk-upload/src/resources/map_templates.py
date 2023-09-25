@@ -12,7 +12,7 @@ class MapTemplates():
         entity_df = entity_df.merge(entity_template_df,
                                     how= 'left',
                                     left_on= ['entity_type', 'entity_subtype'],
-                                    right_on= ['entity_type', 'entity_subtype'])
+                                    right_on= ['entity_template_type', 'entity_template_subtype'])
         return entity_df
 
     def map_rule_template(self, rule_template_df, rule_df):

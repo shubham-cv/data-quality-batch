@@ -33,8 +33,10 @@ class BuildRules():
         # new_ids = get_new_ids(rule_entity_df)
         # rule_entity_df['rule_entity_id'] = new_ids
         rule_entity_df = add_who_columns(rule_entity_df)
-        insert_into_db('rule_entity_map', rule_entity_db_columns, rule_entity_df, rule_entity_df_columns)
-        rule_entity_df.to_csv('output/rule_entity_map.csv', index= False)
+        
+        if rule_entity_df.shape[0] > 0:
+            insert_into_db('rule_entity_map', rule_entity_db_columns, rule_entity_df, rule_entity_df_columns)
+        rule_entity_df.to_csv('bulk-upload/output/rule_entity_map.csv', index= False)
 
     def map_secondary_entity(self, rule_df, entity_mapper):
         rule_df['source_secondary_entity_ids'] = np.NaN
@@ -93,8 +95,10 @@ class BuildRules():
         #                                                         ]
                 
         rule_props_df1 = add_who_columns(rule_props_df1)
-        insert_into_db('rule_properties', rule_props_db_columns, rule_props_df1, rule_props_df_columns)
-        rule_props_df1.to_csv('output/rule_properties.csv', index= False)
+        
+        if rule_props_df1.shape[0] > 0:
+            insert_into_db('rule_properties', rule_props_db_columns, rule_props_df1, rule_props_df_columns)
+        rule_props_df1.to_csv('bulk-upload/output/rule_properties.csv', index= False)
 
         
     def build(self, rule_df, entity_mapper, ruleset_mapper):
@@ -110,12 +114,13 @@ class BuildRules():
         rule_df = self.map_secondary_entity(rule_df, entity_mapper)
 
         # mapping template ids to rule records
-        rule_template_df = read_file('data_files/Bulk_upload_template_HSBC.xlsx', 'rule_template')
+        rule_template_df = read_file('bulk-upload/data_files/Bulk_upload_template_HSBC.xlsx', 'rule_template')
         map_templates = MapTemplates()
         rule_df = map_templates.map_rule_template(rule_template_df, rule_df)
         rule_df = rule_df.drop_duplicates()
 
-        insert_into_db('rule', rule_db_columns, rule_df, rule_df_columns)
+        if rule_df.shape[0] > 0:
+            insert_into_db('rule', rule_db_columns, rule_df, rule_df_columns)
 
         # creating rule entity map table
         self.build_rule_entity_map(rule_df)
@@ -125,7 +130,7 @@ class BuildRules():
 
         rule_df = rule_df[rule_columns]
         rule_df = add_who_columns(rule_df)
-        rule_df.to_csv('output/rule.csv', index= False)
+        rule_df.to_csv('bulk-upload/output/rule.csv', index= False)
 
         return rule_df
 

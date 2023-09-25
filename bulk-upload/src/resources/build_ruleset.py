@@ -13,7 +13,9 @@ class BuildRuleset:
         new_ids = get_new_ids(self.df)
         self.df['ruleset_id'] = new_ids
         ruleset_df = add_who_columns(self.df)
-        ruleset_mapper = id_mapper(ruleset_df, 'ruleset_name', 'ruleset_id')
-        insert_into_db('ruleset', ruleset_db_columns, ruleset_df, ruleset_df_columns)
-        ruleset_df.to_csv('output/ruleset.csv', index= False)
+        ruleset_mapper = id_mapper(ruleset_df, 'ruleset', 'ruleset_name', 'ruleset_id')
+        
+        if ruleset_df.shape[0] > 0:
+            insert_into_db('ruleset', ruleset_db_columns, ruleset_df, ruleset_df_columns)
+        ruleset_df.to_csv('bulk-upload/output/ruleset.csv', index= False)
         return ruleset_mapper

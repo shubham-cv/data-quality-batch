@@ -1,7 +1,7 @@
 import random
 import string
 import pandas as pd
-from resources.constants import *
+from constants import *
 import psycopg2
 
 from dotenv import load_dotenv
@@ -32,9 +32,14 @@ def read_file(file, sheet_name):
     df = pd.read_excel(file, sheet_name= sheet_name)
     return df
         
-def id_mapper(df, name, id):
-    ruleset_mapper = {row[name]: row[id] for index, row in df.iterrows()}
-    return ruleset_mapper
+def id_mapper(df, table_name, name, id):
+    mapper = {row[name]: row[id] for index, row in df.iterrows()}
+    db_df = query_from_db(table_name)
+    print(mapper)
+    for index, row in db_df.iterrows():
+        mapper[row[name]] = str(row[id])
+    print(mapper)
+    return mapper
 
 def rename_columns(df):
     df.columns = df.columns.str.strip().str.replace(' ', '_').str.lower()
@@ -77,3 +82,9 @@ def insert_into_db(table_name, db_columns, df, df_columns):
     with conn.cursor() as cur:
         postgres_insert_query = f"COPY {table_name} ({db_columns}) FROM STDIN WITH(FORMAT CSV, DELIMITER ',',NULL '')"
         cur.copy_expert(postgres_insert_query, csv_buffer)
+
+def query_from_db(table_name):
+    conn = jdbc_connection()
+    df = pd.read_sql(f"select * from {table_name}", conn)
+    print(df)
+    return df
