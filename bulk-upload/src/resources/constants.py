@@ -11,8 +11,8 @@ rule_columns = ['rule_id', 'ruleset_id', 'rule_template_id', 'rule_name', 'rule_
 
 
 # parameters for loading df to DB
-ruleset_db_columns = 'ruleset_id,ruleset_name,ruleset_desc,notification_preference,created_by,created_date,updated_by,updated_date'
-ruleset_df_columns = ['ruleset_id', 'ruleset_name', 'ruleset_description', 'notification_preferences', 'created_by', 'created_date', 'updated_by', 'updated_date']
+ruleset_db_columns = 'ruleset_id,ruleset_name,ruleset_desc,notification_email,created_by,created_date,updated_by,updated_date'
+ruleset_df_columns = ['ruleset_id', 'ruleset_name', 'ruleset_description', 'notification_email', 'created_by', 'created_date', 'updated_by', 'updated_date']
 
 entity_db_columns = 'entity_id,entity_template_id,entity_name,entity_physical_name,entity_primary_key,created_by,created_date,updated_by,updated_date'
 entity_df_columns = ['entity_id','entity_template_id','entity_name','entity_physical_name','primary_key','created_by','created_date','updated_by','updated_date']

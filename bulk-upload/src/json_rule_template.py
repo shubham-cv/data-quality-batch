@@ -142,7 +142,7 @@ if choice == 'rule':
         rule_json['ruleset_id'] = row['ruleset_id']
         rule_json['ruleset_name'] = row['ruleset_name']
         rule_json['ruleset_desc'] = row['ruleset_desc']
-        rule_json['notification_preference'] = row['notification_preference']
+        rule_json['notification_email'] = row['notification_email']
 
     rule = rule[rule['rule_name'] == rule_name]
 
